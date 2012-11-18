@@ -1,0 +1,55 @@
+<mtapp:settinggroup id="sync-category-from-entry">
+    <mtapp:setting
+        id="sync-category-from-entry-blog-id-sync-from-field"
+        label="<__trans phrase="Blog">"
+        hint="Categories syncronized from entries of this blog."
+        show_hint="1"
+    >
+        <select name="blog_id_sync_from" id="sync-category-from-entry-blog-id-sync-from">
+            <option value="0"<mt:if name="blog_id_sync_from" eq="0"> selected="selected"</mt:if>>
+                <mt:var name="label" escape="html">
+            </option>
+
+                <mt:loop name="blog_ids">
+                <option value="<mt:var name='id'>"<mt:if name="blog_id_sync_from" eq="$id"> selected="selected"</mt:if>>
+                    <mt:var name="label" escape="html">
+                </option>
+                </mt:loop>
+        </select>
+    </mtapp:setting>
+        
+    <mtapp:setting
+        id="sync-category-from-entry-force-update-field"
+        label="<__trans phrase='Update'>"
+    >
+        <label for="sync-category-from-entry-force-update">
+            <input
+                type="checkbox"
+                id="sync-category-from-entry-force-update"
+                class="cb"
+                <mt:if name="force_update">checked="checked"</mt:if>
+            >
+            <__trans phrase="Update category label even if changed after sync">
+        
+        </label>
+
+    </mtapp:setting>
+
+    <mtapp:setting
+        id="sync-category-from-entry-force-remove-field"
+        label="<__trans phrase='Remove'>"
+    >
+        <label for="sync-category-from-entry-force-remove">
+            <input
+                type="checkbox"
+                id="sync-category-from-entry-force-remove"
+                class="cb"
+                <mt:if name="force_remove">checked="checked"</mt:if>
+            >
+            <__trans phrase="Remove categories not in entries sync from">
+        
+        </label>
+
+    </mtapp:setting>
+       
+</mtapp:settinggroup>

@@ -1,0 +1,27 @@
+name: SyncCategoryFromEntry
+author_name: Kunihiko Miyanaga
+author_link: http://www.ideamans.com/
+version: 0.1
+schema_version: 0.11
+l10n_class: MT::SyncCategoryFromEntry::L10N
+
+object_types:
+    blog:
+        category_sync_entry_from: integer indexed
+        category_sync_entry_force_update: meta integer
+        category_sync_entry_force_remove: meta integer
+        category_sync_description_from: meta string
+    category:
+        category_sync_entry_id: integer indexed
+
+callbacks:
+    MT::Entry::post_save: $SyncCategoryFromEntry::MT::SyncCategoryFromEntry::Core::on_entry_saved
+    MT::Entry::post_remove: $SyncCategoryFromEntry::MT::SyncCategoryFromEntry::Core::on_entry_removed
+
+applications:
+    cms:
+        callbacks:
+            template_param.list_category: $SyncCategoryFromEntry::MT::SyncCategoryFromEntry::CMS::on_template_param_list_category
+            template_param.cfg_entry: $SyncCategoryFromEntry::MT::SyncCategoryFromEntry::CMS::on_template_param_cfg_entry
+        methods:
+            sync_categories_from_entries: $SyncCategoryFromEntry::MT::SyncCategoryFromEntry::CMS::sync_categories_from_entries
