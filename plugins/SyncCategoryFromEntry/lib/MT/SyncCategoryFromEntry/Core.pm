@@ -54,5 +54,22 @@ sub on_entry_removed {
     1;
 }
 
+sub on_blog_saved {
+    my ( $cb, $eh, $blog ) = @_;
+
+    # Unsync all categories
+    unless ( $blog->category_sync_entry_from ) {
+        my $iter = MT->model('category')->load_iter({
+            blog_id => $blog->id,
+            category_sync_entry_id => { not => 0 },
+        }) || return;
+
+        while ( my $category = $iter->() ) {
+            $category->category_sync_entry_id(0);
+            $category->save;
+        }
+    }
+}
+
 1;
 __END__
