@@ -25,12 +25,15 @@ test_common_website(
             values => {
                 sync_to => {
                     name => 'Sync To',
+                    parent_id => $website->id,
                 },
                 sync_also => {
                     name => 'Sync Also',
+                    parent_id => $website->id,
                 },
                 no_effort => {
                     name => 'No Effort',
+                    parent_id => $website->id,
                 },
             },
             test => sub {

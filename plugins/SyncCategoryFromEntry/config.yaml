@@ -30,4 +30,12 @@ applications:
         callbacks:
             template_param.list_category: $SyncCategoryFromEntry::MT::SyncCategoryFromEntry::CMS::on_template_param_list_category
         methods:
-            sync_category_from_entry_save: $SyncCategoryFromEntry::MT::SyncCategoryFromEntry::CMS::sync_category_from_entry_save
+            sync_category_from_entry_edit: $SyncCategoryFromEntry::MT::SyncCategoryFromEntry::CMS::edit
+            sync_category_from_entry_save: $SyncCategoryFromEntry::MT::SyncCategoryFromEntry::CMS::save
+        menus:
+            settings:category_sync_from_entry:
+                label: Category Sync
+                order: 310
+                mode: sync_category_from_entry_edit
+                permission: edit_categories
+                view: blog

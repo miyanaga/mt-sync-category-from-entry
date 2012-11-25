@@ -1,55 +1,165 @@
-<mtapp:settinggroup id="sync-category-from-entry">
+<__trans_section component="synccategoryfromentry">
+    
+<mt:setvar name="page_title" value="<__trans phrase='Category Synchronization Setting'>">
+<mt:setvar name="position_actions_bottom" value="1">
+
+<mt:setvarblock name="system_msg">
+<mt:if name="error">
+  <mtapp:statusmsg
+     id="generic-error"
+     class="error"
+     can_close="0">
+    <mt:var name="error">
+  </mtapp:statusmsg>
+</mt:if>
+<mt:if name="saved">
+  <mtapp:statusmsg
+     id="saved"
+     class="success"
+     can_close="1">
+    <__trans phrase="Category synchronization settings have been saved.">
+  </mtapp:statusmsg>
+</mt:if>
+<mt:if name="unsync">
+  <mtapp:statusmsg
+     id="unsync"
+     class="success"
+     can_close="1">
+    <__trans phrase="Category synchronization have been stoped.">
+  </mtapp:statusmsg>
+</mt:if>
+<mt:if name="synchronized">
+  <mtapp:statusmsg
+     id="saved"
+     class="success"
+     republish="all"
+     can_close="1">
+    <__trans phrase="Categories have been synchronized from entries.">
+  </mtapp:statusmsg>
+</mt:if>
+</mt:setvarblock>
+
+<mt:setvarblock name="content_header">
+    <li>
+        <a
+            href="<mt:var name='script_url'>?__mode=list&amp;_type=category&amp;blog_id=<mt:var name='blog_id'>"
+            class="icon-left icon-related"
+        >
+            <__trans phrase="Manage Categories">
+        </a>
+    </li>
+
+</mt:setvarblock>
+
+<mt:include name="include/header.tmpl" id="header-include">
+
+<!-- test beacon: sync-category-from-entry -->
+
+<p><__trans phrase="Synchronize categories in this blog from entries in the another blog."></p>
+
+<form id="sync-category-from-entry-form" name="sync-category-from-entry-form" method="POST" action="<mt:var name="script_url">">
+<input type="hidden" name="__mode" value="sync_category_from_entry_save" />
+<input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+<mt:if name="return_args"><input type="hidden" name="return_args" value="<mt:var name="return_args">" /></mt:if>
+<input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+
+<mtapp:settinggroup id="sync-category-entry-from-fields">
     <mtapp:setting
         id="sync-category-from-entry-blog-id-sync-from-field"
         label="<__trans phrase="Blog">"
-        hint="Categories syncronized from entries of this blog."
-        show_hint="1"
     >
-        <select name="blog_id_sync_from" id="sync-category-from-entry-blog-id-sync-from">
-            <option value="0"<mt:if name="blog_id_sync_from" eq="0"> selected="selected"</mt:if>>
-                <mt:var name="label" escape="html">
+        <select name="sync_from" id="sync-from">
+            <mt:loop name="blogs">
+            <option value="<mt:var name='id'>"<mt:if name="active"> selected="selected"</mt:if>>
+                <mt:var name="name" escape="html">
             </option>
-
-                <mt:loop name="blog_ids">
-                <option value="<mt:var name='id'>"<mt:if name="blog_id_sync_from" eq="$id"> selected="selected"</mt:if>>
-                    <mt:var name="label" escape="html">
-                </option>
-                </mt:loop>
+            </mt:loop>
         </select>
     </mtapp:setting>
-        
+                
+<div id="sync-category-entry-options-fields" style="display:none">
     <mtapp:setting
-        id="sync-category-from-entry-force-update-field"
+        id="update-field"
         label="<__trans phrase='Update'>"
     >
-        <label for="sync-category-from-entry-force-update">
+        <label for="update">
             <input
                 type="checkbox"
-                id="sync-category-from-entry-force-update"
+                id="update"
+                name="update"
                 class="cb"
-                <mt:if name="force_update">checked="checked"</mt:if>
+                value="1"
+                <mt:if name="update">checked="checked"</mt:if>
             >
-            <__trans phrase="Update category label even if changed after sync">
-        
+            <__trans phrase="Update categories even if changed after sync">
         </label>
 
     </mtapp:setting>
 
     <mtapp:setting
-        id="sync-category-from-entry-force-remove-field"
+        id="remove-field"
         label="<__trans phrase='Remove'>"
     >
-        <label for="sync-category-from-entry-force-remove">
+        <label for="remove">
             <input
                 type="checkbox"
-                id="sync-category-from-entry-force-remove"
+                name="remove"
+                id="remove"
                 class="cb"
-                <mt:if name="force_remove">checked="checked"</mt:if>
+                value="1"
+                <mt:if name="remove">checked="checked"</mt:if>
             >
             <__trans phrase="Remove categories not in entries sync from">
-        
         </label>
 
     </mtapp:setting>
-       
+
+</div>
 </mtapp:settinggroup>
+
+<mt:setvarblock name="action_buttons">
+  <button
+     type="submit"
+     accesskey="s"
+     title="<__trans phrase="Save (s)">"
+     class="save action primary button">
+    <__trans phrase="Save">
+  </button>
+    <label for="sync-now" id="sync-now-label" style="display:none">
+        <input
+            type="checkbox"
+            name="sync_now"
+            id="sync-now"
+            class="cb"
+            value="1"
+        >
+        <__trans phrase="Synchronize categories now">
+    </label>
+</mt:setvarblock>
+<mt:include name="include/actions_bar.tmpl" bar_position="bottom" hide_pager="1" settings_bar="1">
+
+</form>
+
+<mt:setvarblock name="jq_js_include" append="1">
+(function($) {
+    var $sync_from = $('#sync-from'),
+        $options = $('#sync-category-entry-options-fields, #sync-now-label');
+
+    function update_state() {
+        if ($sync_from.val() == 0) {
+            $options.hide();
+        } else {
+            $options.show();
+        }
+    }
+    
+    update_state();
+    $sync_from.change(function() {
+        update_state();
+    });
+})(jQuery);
+</mt:setvarblock>
+
+<mt:include name="include/footer.tmpl">
+
+</__trans_section>
